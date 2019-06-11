@@ -8,6 +8,8 @@ const UserModel = require('./models/user')
 
 const NoticiasRoute = require('./routes/noticias')
 const RestritoRoute = require('./routes/restrito')
+const AuthRoute = require('./routes/auth')
+const PagesRoute = require('./routes/pages')
 
 const app = express()
 const port = process.env.PORT || 3075
@@ -43,7 +45,13 @@ app.use(session({ secret: 'fullstack-master' }))
 
 app.use(express.static('public'))
 
-app.get('/', (req, res) => res.render('index'))
+app.use((req, res, next) => {
+  if ('user' in req.session) {
+    res.locals.user = req.session.user
+  }
+  next()
+})
+
 
 app.use('/restrito', (req, res, next) => {
   if ('user' in req.session) {
@@ -53,23 +61,12 @@ app.use('/restrito', (req, res, next) => {
   console.log('usuário não logado')
   res.redirect('/login')
 })
+
 app.use('/noticias', NoticiasRoute)
 app.use('/restrito', RestritoRoute)
 
-app.get('/login', (req, res) => {
-  res.render('login')
-})
-app.post('/login', async (req, res) => {
-  const user = await UserModel.findOne({ username: req.body.username })
-  const isValid = await user.checkPassword(req.body.password)
-
-  if (isValid) {
-    req.session.user = user
-    res.redirect('/restrito/noticias')
-  } else {
-    res.redirect('/login')
-  }
-})
+app.use('/', AuthRoute)
+app.use('/', PagesRoute)
 
 mongoose
   .connect(mongo, { useNewUrlParser: true })
