@@ -2,6 +2,13 @@ const router = require('express').Router()
 
 const UserModel = require('../models/user')
 
+router.use((req, res, next) => {
+    if ('user' in req.session) {
+        res.locals.user = req.session.user
+    }
+    next()
+})
+
 router.get('/login', (req, res) => {
     res.render('login')
 })

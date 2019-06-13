@@ -34,19 +34,19 @@ const createInitialUser = async () => {
     console.log('User admin already exists!')
   }
 
-  const noticia = new NoticiaModel({
-    title: `Notícia Pública ${new Date().getTime()}`,
-    content: `content`,
-    category: `public`,
-  })
-  await noticia.save()
+  // const noticia = new NoticiaModel({
+  //   title: `Notícia Pública ${new Date().getTime()}`,
+  //   content: `content`,
+  //   category: `public`,
+  // })
+  // await noticia.save()
 
-  const noticia2 = new NoticiaModel({
-    title: `Notícia Privada ${new Date().getTime()}`,
-    content: `other content`,
-    category: `private`,
-  })
-  await noticia2.save()
+  // const noticia2 = new NoticiaModel({
+  //   title: `Notícia Privada ${new Date().getTime()}`,
+  //   content: `other content`,
+  //   category: `private`,
+  // })
+  // await noticia2.save()
 }
 
 mongoose.Promise = global.Promise
@@ -60,28 +60,10 @@ app.use(session({ secret: 'fullstack-master' }))
 
 app.use(express.static('public'))
 
-app.use((req, res, next) => {
-  if ('user' in req.session) {
-    res.locals.user = req.session.user
-  }
-  next()
-})
-
-
-app.use('/restrito', (req, res, next) => {
-  if ('user' in req.session) {
-    console.log('usuário logado')
-    return next()
-  }
-  console.log('usuário não logado')
-  res.redirect('/login')
-})
-
-app.use('/noticias', NoticiasRoute)
-app.use('/restrito', RestritoRoute)
-
 app.use('/', AuthRoute)
 app.use('/', PagesRoute)
+app.use('/noticias', NoticiasRoute)
+app.use('/restrito', RestritoRoute)
 
 mongoose
   .connect(mongo, { useNewUrlParser: true })
