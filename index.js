@@ -11,6 +11,7 @@ const NoticiasRoute = require('./routes/noticias')
 const RestritoRoute = require('./routes/restrito')
 const AuthRoute = require('./routes/auth')
 const PagesRoute = require('./routes/pages')
+const AdminRoute = require('./routes/admin')
 
 const app = express()
 const port = process.env.PORT || 3075
@@ -22,13 +23,13 @@ const createInitialUser = async () => {
     const user = new UserModel({
       username: 'admin',
       password: 'abc123',
-      role: ['restrito', 'admin'],
+      roles: ['restrito', 'admin'],
     })
 
     const userRestrito = new UserModel({
       username: 'user',
       password: 'abc123',
-      role: ['restrito'],
+      roles: ['restrito'],
     })
     await userRestrito.save()
 
@@ -39,8 +40,6 @@ const createInitialUser = async () => {
         console.log('User admin created!', doc)
       }
     })
-  } else {
-    console.log('User admin already exists!')
   }
 
   // const noticia = new NoticiaModel({
@@ -73,6 +72,7 @@ app.use('/', AuthRoute)
 app.use('/', PagesRoute)
 app.use('/noticias', NoticiasRoute)
 app.use('/restrito', RestritoRoute)
+app.use('/admin', AdminRoute)
 
 mongoose
   .connect(mongo, { useNewUrlParser: true })

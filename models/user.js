@@ -10,7 +10,8 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role: {
+    activeRole: String,
+    roles: {
         type: [String],
         enum: ['restrito', 'admin'],
     },
@@ -19,15 +20,12 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre('save', function (next) {
     const user = this
     if (!user.isModified('password')) {
-        console.log('não foi modificado a senha...')
         return next()
     }
 
     bcrypt.genSalt((err, salt) => {
         bcrypt.hash(user.password, salt, (error, hash) => {
-            console.log('senha atual.:', user.password)
             user.password = hash
-            console.log('nova senha..:', user.password)
             next()
         })
     })

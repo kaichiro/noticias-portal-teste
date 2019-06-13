@@ -4,10 +4,12 @@ const Noticia = require('../models/noticia')
 
 router.use((req, res, next) => {
     if ('user' in req.session) {
-        console.log('usuário logado')
-        return next()
+        if (req.session.user.roles.indexOf('restrito') >= 0) {
+            return next()
+        } else {
+            res.redirect('/')
+        }
     }
-    console.log('usuário não logado')
     res.redirect('/login')
 })
 
