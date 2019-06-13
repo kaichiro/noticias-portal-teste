@@ -22,7 +22,16 @@ const createInitialUser = async () => {
     const user = new UserModel({
       username: 'admin',
       password: 'abc123',
+      role: ['restrito', 'admin'],
     })
+
+    const userRestrito = new UserModel({
+      username: 'user',
+      password: 'abc123',
+      role: ['restrito'],
+    })
+    await userRestrito.save()
+
     await user.save((err, doc) => {
       if (err) {
         console.log('Error to try create doc:', err)
