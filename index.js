@@ -5,6 +5,7 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 
 const UserModel = require('./models/user')
+const NoticiaModel = require('./models/noticia')
 
 const NoticiasRoute = require('./routes/noticias')
 const RestritoRoute = require('./routes/restrito')
@@ -32,6 +33,20 @@ const createInitialUser = async () => {
   } else {
     console.log('User admin already exists!')
   }
+
+  const noticia = new NoticiaModel({
+    title: `Notícia Pública ${new Date().getTime()}`,
+    content: `content`,
+    category: `public`,
+  })
+  await noticia.save()
+
+  const noticia2 = new NoticiaModel({
+    title: `Notícia Privada ${new Date().getTime()}`,
+    content: `other content`,
+    category: `private`,
+  })
+  await noticia2.save()
 }
 
 mongoose.Promise = global.Promise
