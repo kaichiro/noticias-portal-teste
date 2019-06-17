@@ -33,7 +33,7 @@
             <a class="nav-link" href="/noticias">Notícias</a>
           </li>
 
-          <% if('user' in locals) { %>
+          <% if(locals.user) { %>
 
           <% if('restrito' === locals.role) { %>
           <li class="nav-item">
@@ -51,7 +51,7 @@
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= ('user' in locals)?locals.user.username:'não logado' %></a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <% if(locals.user.roles.length > 1) { %>
-                <% locals.user.roles.forEach( role => { %>
+                <% Object.values(locals.user.roles).forEach( role => { %>
                   <a class="dropdown-item" href="/change-role/<%= role %>"><%= role %></a>
                 <% } ) %>
               <% } %>
